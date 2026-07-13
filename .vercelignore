@@ -1,0 +1,7 @@
+# Source assets are retained locally for future image optimization only.
+# The production site references their WebP versions under public/media/optimized.
+public/media/album/
+public/media/hero-gallery/
+public/media/work-covers/
+public/media/strength-icons/
+public/media/strength-hover-icons/
