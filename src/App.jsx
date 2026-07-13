@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
+import '@fontsource/unbounded/900.css'
 
 import albumData from './albumData'
 import CircularGallery from './components/CircularGallery/CircularGallery'

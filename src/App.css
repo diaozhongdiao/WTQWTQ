@@ -7,6 +7,7 @@
   --panel-line: rgba(255, 255, 255, 0.12);
   --deep: #030609;
   --max: 1700px;
+  --display-font: "Unbounded", "Arial Black", Impact, sans-serif;
 }
 
 * {
@@ -234,9 +235,7 @@ a {
   position: relative;
   width: fit-content;
   margin: 0;
-  font-family:
-    "Neue Haas Grotesk Display", "Helvetica Neue", "Avenir Next", Avenir,
-    "Century Gothic", Arial, sans-serif;
+  font-family: var(--display-font);
   line-height: 0.9;
   letter-spacing: 0;
 }
@@ -392,6 +391,7 @@ a {
 
 .section-title h2 {
   margin: 0;
+  font-family: var(--display-font);
   font-size: 44px;
   line-height: 1;
   font-weight: 900;
@@ -447,6 +447,7 @@ a {
 .contact-card h3 {
   margin: 0 0 18px;
   color: var(--lime);
+  font-family: var(--display-font);
   font-size: 12px;
   font-weight: 900;
 }
@@ -589,6 +590,7 @@ a {
 
 .career-card time {
   color: var(--lime);
+  font-family: var(--display-font);
   font-size: 13px;
   font-weight: 800;
   transition: text-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -758,6 +760,7 @@ a {
   top: 22px;
   right: 24px;
   color: rgba(255, 255, 255, 0.28);
+  font-family: var(--display-font);
   font-size: 13px;
   font-weight: 900;
 }
@@ -840,6 +843,7 @@ a {
   display: block;
   margin-bottom: 12px;
   color: var(--lime);
+  font-family: var(--display-font);
   font-size: 13px;
   font-weight: 900;
 }
@@ -1049,6 +1053,7 @@ a {
   border: 1px solid rgba(185, 255, 24, 0.82);
   color: var(--lime);
   background: transparent;
+  font-family: var(--display-font);
   font-size: 10px;
   font-weight: 900;
   transition:
@@ -1058,6 +1063,7 @@ a {
 
 .strength-top small {
   color: rgba(244, 246, 241, 0.38);
+  font-family: var(--display-font);
   font-size: 10px;
   font-weight: 900;
   transition: color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -1161,6 +1167,8 @@ a {
   line-height: 0.96;
   letter-spacing: 0;
   text-transform: uppercase;
+  font-family: var(--display-font);
+  font-weight: 900;
 }
 
 .contact-title-line {
