@@ -131,7 +131,15 @@ function App() {
       <Header />
       <section className="hero-section section" id="home">
         <div className="hero-bg" aria-hidden="true">
-          <video className="hero-video" autoPlay muted loop playsInline preload="auto">
+          <video
+            className="hero-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/media/optimized/hero-gallery/3-4-1.webp"
+          >
             <source src="/media/hero-bg-0708-2.mp4" type="video/mp4" />
           </video>
         </div>
@@ -562,7 +570,15 @@ function WorkAlbumModal({ work, onClose }) {
                 onFocus={() => handleImageHover(true)}
                 onBlur={() => handleImageHover(false)}
               >
-                <img src={image.src} alt={`${work.title}作品 ${index + 1}`} loading={index < 6 ? 'eager' : 'lazy'} />
+                <img
+                  src={image.src}
+                  alt={`${work.title}作品 ${index + 1}`}
+                  width={image.width}
+                  height={image.height}
+                  loading={index < album.columns ? 'eager' : 'lazy'}
+                  decoding="async"
+                  fetchPriority={index < album.columns ? 'high' : 'low'}
+                />
               </figure>
             ))}
           </div>
