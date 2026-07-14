@@ -138,7 +138,7 @@ function App() {
             loop
             playsInline
             preload="metadata"
-            poster="/media/optimized/hero-gallery/3-4-1.webp"
+            poster="/media/optimized/hero-poster.webp"
           >
             <source src="/media/hero-bg-0708-2.mp4" type="video/mp4" />
           </video>
