@@ -412,7 +412,7 @@ function OpeningLoader({ onExitStart, onDone }) {
     <div className={`opening-loader ${isLeaving ? 'is-leaving' : ''}`} role="status" aria-label="页面加载中">
       <div className="opening-loader__inner">
         <div className="opening-loader__count">
-          <CountUp from={0} to={100} duration={1.8} onEnd={handleEnd} />
+          <CountUp from={0} to={100} duration={8} onEnd={handleEnd} />
           <span>%</span>
         </div>
         <p>PC、平板观看最佳</p>
