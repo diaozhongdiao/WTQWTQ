@@ -121,11 +121,22 @@ a {
   font-size: 0.28em;
 }
 
-.opening-loader p {
+.opening-loader__tips {
+  display: grid;
+  gap: 8px;
+}
+
+.opening-loader__tips p {
   margin: 0;
   color: rgba(244, 246, 241, 0.8);
   font-size: clamp(13px, 1.4vw, 18px);
   letter-spacing: 0.12em;
+}
+
+.opening-loader__tips p + p {
+  color: rgba(244, 246, 241, 0.62);
+  font-size: clamp(12px, 1.1vw, 15px);
+  letter-spacing: 0.08em;
 }
 
 .floating-nav {

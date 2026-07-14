@@ -415,7 +415,10 @@ function OpeningLoader({ onExitStart, onDone }) {
           <CountUp from={0} to={100} duration={8} onEnd={handleEnd} />
           <span>%</span>
         </div>
-        <p>PC、平板观看最佳</p>
+        <div className="opening-loader__tips">
+          <p>PC、平板观看最佳</p>
+          <p>图片加载需要时间，请稍等片刻</p>
+        </div>
       </div>
     </div>
   )
