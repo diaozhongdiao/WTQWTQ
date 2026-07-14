@@ -5,6 +5,7 @@ import '@fontsource/unbounded/900.css'
 import albumData from './albumData'
 import CircularGallery from './components/CircularGallery/CircularGallery'
 import BorderGlow from './components/BorderGlow/BorderGlow'
+import CountUp from './components/CountUp/CountUp'
 import Grainient from './components/Grainient/Grainient'
 import SpotlightCard from './components/SpotlightCard/SpotlightCard'
 import StarBorder from './components/StarBorder/StarBorder'
@@ -110,13 +111,22 @@ const contactTitleLines = ["LET'S BUILD", 'BETTER VISUAL', 'SYSTEMS']
 
 function App() {
   const [activeWork, setActiveWork] = useState(null)
-  usePortfolioAnimations()
+  const [showOpening, setShowOpening] = useState(true)
+  const [introReady, setIntroReady] = useState(false)
+  usePortfolioAnimations(introReady)
 
   const openWork = (work) => {
     setActiveWork(work)
   }
 
   return (
+    <>
+    {showOpening ? (
+      <OpeningLoader
+        onExitStart={() => setIntroReady(true)}
+        onDone={() => setShowOpening(false)}
+      />
+    ) : null}
     <main className="site-shell">
       <Header />
       <section className="hero-section section" id="home">
@@ -151,6 +161,8 @@ function App() {
             font="bold 22px Arial"
             scrollSpeed={2.4}
             scrollEase={0.04}
+            autoPlay
+            autoPlaySpeed={0.018}
           />
         </div>
       </section>
@@ -375,6 +387,29 @@ function App() {
       </div>
       {activeWork ? <WorkAlbumModal work={activeWork} onClose={() => setActiveWork(null)} /> : null}
     </main>
+    </>
+  )
+}
+
+function OpeningLoader({ onExitStart, onDone }) {
+  const [isLeaving, setIsLeaving] = useState(false)
+
+  const handleEnd = () => {
+    setIsLeaving(true)
+    if (typeof onExitStart === 'function') onExitStart()
+    window.setTimeout(onDone, 620)
+  }
+
+  return (
+    <div className={`opening-loader ${isLeaving ? 'is-leaving' : ''}`} role="status" aria-label="页面加载中">
+      <div className="opening-loader__inner">
+        <div className="opening-loader__count">
+          <CountUp from={0} to={100} duration={1.8} onEnd={handleEnd} />
+          <span>%</span>
+        </div>
+        <p>PC、平板观看最佳</p>
+      </div>
+    </div>
   )
 }
 

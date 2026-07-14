@@ -4,8 +4,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export default function usePortfolioAnimations() {
+export default function usePortfolioAnimations(enabled = true) {
   useLayoutEffect(() => {
+    if (!enabled) return undefined
+
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduceMotion) return undefined
 
@@ -154,5 +156,5 @@ export default function usePortfolioAnimations() {
     })
 
     return () => ctx.revert()
-  }, [])
+  }, [enabled])
 }

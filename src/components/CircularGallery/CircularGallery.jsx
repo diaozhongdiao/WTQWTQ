@@ -275,9 +275,23 @@ class Media {
 }
 
 class GalleryApp {
-  constructor(container, { items, bend, textColor = '#ffffff', borderRadius = 0, font, scrollSpeed = 2, scrollEase = 0.05 } = {}) {
+  constructor(container, {
+    items,
+    bend,
+    textColor = '#ffffff',
+    borderRadius = 0,
+    font,
+    scrollSpeed = 2,
+    scrollEase = 0.05,
+    autoPlay = false,
+    autoPlaySpeed = 0.018,
+  } = {}) {
     this.container = container
     this.scrollSpeed = scrollSpeed
+    this.autoPlay = autoPlay
+    this.autoPlaySpeed = autoPlaySpeed
+    this.pauseAutoUntil = 0
+    this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 }
     this.onCheckDebounce = debounce(this.onCheck, 200)
     this.createRenderer()
@@ -342,6 +356,7 @@ class GalleryApp {
 
   onTouchDown(e) {
     this.isDown = true
+    this.pauseAutoUntil = window.performance.now() + 1400
     this.scroll.position = this.scroll.current
     this.start = e.touches ? e.touches[0].clientX : e.clientX
   }
@@ -355,10 +370,12 @@ class GalleryApp {
 
   onTouchUp() {
     this.isDown = false
+    this.pauseAutoUntil = window.performance.now() + 1400
     this.onCheck()
   }
 
   onWheel(e) {
+    this.pauseAutoUntil = window.performance.now() + 1400
     const delta = e.deltaY || e.wheelDelta || e.detail
     this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2
     this.onCheckDebounce()
@@ -367,16 +384,19 @@ class GalleryApp {
   onKeyDown(e) {
     if (e.key === 'ArrowRight') {
       e.preventDefault()
+      this.pauseAutoUntil = window.performance.now() + 1400
       this.scroll.target += this.scrollSpeed * 5
       this.onCheckDebounce()
     }
     if (e.key === 'ArrowLeft') {
       e.preventDefault()
+      this.pauseAutoUntil = window.performance.now() + 1400
       this.scroll.target -= this.scrollSpeed * 5
       this.onCheckDebounce()
     }
     if (e.key === 'Home') {
       e.preventDefault()
+      this.pauseAutoUntil = window.performance.now() + 1400
       this.scroll.target = 0
       this.onCheckDebounce()
     }
@@ -409,6 +429,9 @@ class GalleryApp {
   }
 
   update() {
+    if (this.autoPlay && !this.reducedMotion && !this.isDown && window.performance.now() > this.pauseAutoUntil) {
+      this.scroll.target -= this.autoPlaySpeed
+    }
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease)
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left'
     if (this.medias) {
@@ -465,6 +488,8 @@ export default function CircularGallery({
   font = 'bold 24px Arial',
   scrollSpeed = 2,
   scrollEase = 0.05,
+  autoPlay = false,
+  autoPlaySpeed = 0.018,
 }) {
   const containerRef = useRef(null)
 
@@ -478,12 +503,14 @@ export default function CircularGallery({
       font,
       scrollSpeed,
       scrollEase,
+      autoPlay,
+      autoPlaySpeed,
     })
 
     return () => {
       app.destroy()
     }
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase])
+  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, autoPlay, autoPlaySpeed])
 
   return (
     <div
