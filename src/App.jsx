@@ -6,6 +6,7 @@ import albumData from './albumData'
 import CircularGallery from './components/CircularGallery/CircularGallery'
 import BorderGlow from './components/BorderGlow/BorderGlow'
 import CountUp from './components/CountUp/CountUp'
+import GooeyNav from './components/GooeyNav/GooeyNav'
 import Grainient from './components/Grainient/Grainient'
 import SpotlightCard from './components/SpotlightCard/SpotlightCard'
 import StarBorder from './components/StarBorder/StarBorder'
@@ -435,16 +436,21 @@ function Header() {
     window.history.replaceState(null, '', `#${sectionId}`)
   }
 
+  const navItems = [
+    { label: '工作经历', href: '#experience', onClick: (event) => scrollToSection(event, 'experience') },
+    { label: '精选作品', href: '#works', onClick: (event) => scrollToSection(event, 'works') },
+    { label: '个人优势', href: '#strengths', onClick: (event) => scrollToSection(event, 'strengths') },
+  ]
+
   return (
     <header className="floating-nav js-nav">
       <a className="logo-pill" href="#home" aria-label="返回首页" onClick={(event) => scrollToSection(event, 'home')}>
         <img src="/media/optimized/brand-logo.webp" alt="Awei" />
       </a>
-      <nav aria-label="主导航">
-        <a href="#experience" onClick={(event) => scrollToSection(event, 'experience')}>工作经历</a>
-        <a href="#works" onClick={(event) => scrollToSection(event, 'works')}>精选作品</a>
-        <a href="#strengths" onClick={(event) => scrollToSection(event, 'strengths')}>个人优势</a>
-      </nav>
+      <GooeyNav
+        items={navItems}
+        initialActiveIndex={0}
+      />
       <a className="contact-button" href="#contact" onClick={(event) => scrollToSection(event, 'contact')}>联系我</a>
     </header>
   )
