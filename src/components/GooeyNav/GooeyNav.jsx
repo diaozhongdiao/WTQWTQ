@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import './GooeyNav.css'
 
-const GooeyNav = ({ items, initialActiveIndex = 0 }) => {
+const GooeyNav = ({ items, activeIndex: controlledActiveIndex, initialActiveIndex = 0, onActiveChange }) => {
   const containerRef = useRef(null)
   const navRef = useRef(null)
   const sliderRef = useRef(null)
-  const [activeIndex, setActiveIndex] = useState(initialActiveIndex)
+  const [internalActiveIndex, setInternalActiveIndex] = useState(initialActiveIndex)
+  const activeIndex = typeof controlledActiveIndex === 'number' ? controlledActiveIndex : internalActiveIndex
 
   const updateSliderPosition = (index = activeIndex) => {
     const activeItem = navRef.current?.querySelectorAll('li')[index]
@@ -20,10 +21,17 @@ const GooeyNav = ({ items, initialActiveIndex = 0 }) => {
     sliderRef.current.style.setProperty('--slider-height', `${itemRect.height}px`)
   }
 
+  const setSelectedIndex = (index) => {
+    if (typeof controlledActiveIndex !== 'number') {
+      setInternalActiveIndex(index)
+    }
+    onActiveChange?.(index)
+    updateSliderPosition(index)
+  }
+
   const handleSelect = (event, index, item) => {
     event.preventDefault()
-    setActiveIndex(index)
-    updateSliderPosition(index)
+    setSelectedIndex(index)
     item.onClick?.(event)
   }
 

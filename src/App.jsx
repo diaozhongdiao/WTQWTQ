@@ -426,8 +426,10 @@ function OpeningLoader({ onExitStart, onDone }) {
 }
 
 function Header() {
+  const [activeNavIndex, setActiveNavIndex] = useState(0)
+
   const scrollToSection = (event, sectionId) => {
-    event.preventDefault()
+    event?.preventDefault?.()
     const target = document.getElementById(sectionId)
     if (!target) return
 
@@ -436,10 +438,67 @@ function Header() {
     window.history.replaceState(null, '', `#${sectionId}`)
   }
 
+  useEffect(() => {
+    const sectionIds = ['experience', 'works', 'strengths']
+    const sections = sectionIds.map((id) => document.getElementById(id)).filter(Boolean)
+    let ticking = false
+
+    const updateActiveSection = () => {
+      const triggerY = window.innerHeight * 0.38
+      let nextIndex = 0
+
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect()
+        if (rect.top <= triggerY) {
+          nextIndex = index
+        }
+      })
+
+      setActiveNavIndex(nextIndex)
+      ticking = false
+    }
+
+    const requestUpdate = () => {
+      if (ticking) return
+      ticking = true
+      window.requestAnimationFrame(updateActiveSection)
+    }
+
+    updateActiveSection()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate)
+
+    return () => {
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
+    }
+  }, [])
+
   const navItems = [
-    { label: '工作经历', href: '#experience', onClick: (event) => scrollToSection(event, 'experience') },
-    { label: '精选作品', href: '#works', onClick: (event) => scrollToSection(event, 'works') },
-    { label: '个人优势', href: '#strengths', onClick: (event) => scrollToSection(event, 'strengths') },
+    {
+      label: '工作经历',
+      href: '#experience',
+      onClick: (event) => {
+        setActiveNavIndex(0)
+        scrollToSection(event, 'experience')
+      },
+    },
+    {
+      label: '精选作品',
+      href: '#works',
+      onClick: (event) => {
+        setActiveNavIndex(1)
+        scrollToSection(event, 'works')
+      },
+    },
+    {
+      label: '个人优势',
+      href: '#strengths',
+      onClick: (event) => {
+        setActiveNavIndex(2)
+        scrollToSection(event, 'strengths')
+      },
+    },
   ]
 
   return (
@@ -449,7 +508,8 @@ function Header() {
       </a>
       <GooeyNav
         items={navItems}
-        initialActiveIndex={0}
+        activeIndex={activeNavIndex}
+        onActiveChange={setActiveNavIndex}
       />
       <a className="contact-button" href="#contact" onClick={(event) => scrollToSection(event, 'contact')}>联系我</a>
     </header>
