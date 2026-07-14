@@ -427,11 +427,39 @@ function OpeningLoader({ onExitStart, onDone }) {
 
 function Header() {
   const [activeNavIndex, setActiveNavIndex] = useState(0)
+  const navLockUntilRef = useRef(0)
 
-  const scrollToSection = (event, sectionId) => {
+  const getCurrentNavIndex = () => {
+    const sectionIds = ['experience', 'works', 'strengths']
+    const triggerY = window.innerHeight * 0.38
+    let nextIndex = 0
+
+    sectionIds.forEach((sectionId, index) => {
+      const section = document.getElementById(sectionId)
+      if (!section) return
+
+      const rect = section.getBoundingClientRect()
+      if (rect.top <= triggerY) {
+        nextIndex = index
+      }
+    })
+
+    return nextIndex
+  }
+
+  const scrollToSection = (event, sectionId, navIndex) => {
     event?.preventDefault?.()
     const target = document.getElementById(sectionId)
     if (!target) return
+
+    if (typeof navIndex === 'number') {
+      setActiveNavIndex(navIndex)
+      navLockUntilRef.current = Date.now() + 1300
+      window.setTimeout(() => {
+        navLockUntilRef.current = 0
+        setActiveNavIndex(getCurrentNavIndex())
+      }, 1350)
+    }
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
@@ -439,22 +467,12 @@ function Header() {
   }
 
   useEffect(() => {
-    const sectionIds = ['experience', 'works', 'strengths']
-    const sections = sectionIds.map((id) => document.getElementById(id)).filter(Boolean)
     let ticking = false
 
     const updateActiveSection = () => {
-      const triggerY = window.innerHeight * 0.38
-      let nextIndex = 0
-
-      sections.forEach((section, index) => {
-        const rect = section.getBoundingClientRect()
-        if (rect.top <= triggerY) {
-          nextIndex = index
-        }
-      })
-
-      setActiveNavIndex(nextIndex)
+      if (Date.now() >= navLockUntilRef.current) {
+        setActiveNavIndex(getCurrentNavIndex())
+      }
       ticking = false
     }
 
@@ -479,24 +497,21 @@ function Header() {
       label: '工作经历',
       href: '#experience',
       onClick: (event) => {
-        setActiveNavIndex(0)
-        scrollToSection(event, 'experience')
+        scrollToSection(event, 'experience', 0)
       },
     },
     {
       label: '精选作品',
       href: '#works',
       onClick: (event) => {
-        setActiveNavIndex(1)
-        scrollToSection(event, 'works')
+        scrollToSection(event, 'works', 1)
       },
     },
     {
       label: '个人优势',
       href: '#strengths',
       onClick: (event) => {
-        setActiveNavIndex(2)
-        scrollToSection(event, 'strengths')
+        scrollToSection(event, 'strengths', 2)
       },
     },
   ]
