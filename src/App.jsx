@@ -537,7 +537,9 @@ function WorkAlbumModal({ work, onClose }) {
   const backdropRef = useRef(null)
   const pauseUntilRef = useRef(0)
   const isImageHoveredRef = useRef(false)
+  const imageFrameRefs = useRef(new Map())
   const [introComplete, setIntroComplete] = useState(false)
+  const [loadedImageIndexes, setLoadedImageIndexes] = useState(new Set())
   const album = albumData[work.className]
 
   useEffect(() => {
@@ -556,6 +558,8 @@ function WorkAlbumModal({ work, onClose }) {
     if (!album) return undefined
 
     setIntroComplete(false)
+    imageFrameRefs.current.clear()
+    setLoadedImageIndexes(new Set(Array.from({ length: Math.max(album.columns, 1) }, (_, index) => index)))
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduceMotion) {
@@ -585,6 +589,47 @@ function WorkAlbumModal({ work, onClose }) {
 
     return () => context.revert()
   }, [album])
+
+  useEffect(() => {
+    if (!album || !scrollRef.current) return undefined
+
+    if (!('IntersectionObserver' in window)) {
+      setLoadedImageIndexes(new Set(album.images.map((_, index) => index)))
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleIndexes = entries
+          .filter((entry) => entry.isIntersecting)
+          .map((entry) => Number(entry.target.dataset.imageIndex))
+          .filter((index) => Number.isInteger(index))
+
+        if (visibleIndexes.length === 0) return
+
+        setLoadedImageIndexes((currentIndexes) => {
+          const nextIndexes = new Set(currentIndexes)
+          visibleIndexes.forEach((index) => nextIndexes.add(index))
+          return nextIndexes
+        })
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) observer.unobserve(entry.target)
+        })
+      },
+      {
+        root: scrollRef.current,
+        rootMargin: '900px 0px',
+        threshold: 0.01,
+      },
+    )
+
+    imageFrameRefs.current.forEach((node, index) => {
+      if (!loadedImageIndexes.has(index)) observer.observe(node)
+    })
+
+    return () => observer.disconnect()
+  }, [album, loadedImageIndexes])
 
   useEffect(() => {
     if (!album || !introComplete) return undefined
@@ -623,6 +668,14 @@ function WorkAlbumModal({ work, onClose }) {
     if (!isHovering) pauseUntilRef.current = performance.now() + 360
   }
 
+  const setImageFrameRef = (index) => (node) => {
+    if (node) {
+      imageFrameRefs.current.set(index, node)
+    } else {
+      imageFrameRefs.current.delete(index)
+    }
+  }
+
   return (
     <div className="album-modal" role="dialog" aria-modal="true" aria-label={`${work.title}作品相册`}>
       <button ref={backdropRef} className="album-backdrop" type="button" aria-label="关闭弹窗" onClick={onClose} />
@@ -649,20 +702,27 @@ function WorkAlbumModal({ work, onClose }) {
               <figure
                 className={`album-image-frame ${image.long ? 'long' : ''}`}
                 key={image.src}
+                ref={setImageFrameRef(index)}
+                data-image-index={index}
+                style={{ '--album-image-ratio': `${image.width} / ${image.height}` }}
                 onPointerEnter={() => handleImageHover(true)}
                 onPointerLeave={() => handleImageHover(false)}
                 onFocus={() => handleImageHover(true)}
                 onBlur={() => handleImageHover(false)}
               >
-                <img
-                  src={image.src}
-                  alt={`${work.title}作品 ${index + 1}`}
-                  width={image.width}
-                  height={image.height}
-                  loading={index < album.columns ? 'eager' : 'lazy'}
-                  decoding="async"
-                  fetchPriority={index < album.columns ? 'high' : 'low'}
-                />
+                {loadedImageIndexes.has(index) ? (
+                  <img
+                    src={image.src}
+                    alt={`${work.title}作品 ${index + 1}`}
+                    width={image.width}
+                    height={image.height}
+                    loading={index < album.columns ? 'eager' : 'lazy'}
+                    decoding="async"
+                    fetchPriority={index < album.columns ? 'high' : 'low'}
+                  />
+                ) : (
+                  <span className="album-image-placeholder" aria-hidden="true" />
+                )}
               </figure>
             ))}
           </div>

@@ -1029,6 +1029,8 @@ a {
 .album-image-frame {
   display: block;
   break-inside: avoid;
+  position: relative;
+  aspect-ratio: var(--album-image-ratio, auto);
   margin: 0 0 20px;
   overflow: hidden;
   border-radius: 16px;
@@ -1043,9 +1045,29 @@ a {
 .album-image-frame img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1.001);
   transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.album-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.album-image-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transform: translateX(-100%);
+  animation: album-placeholder-shimmer 1.8s ease-in-out infinite;
 }
 
 .album-image-frame:hover,
@@ -1069,10 +1091,18 @@ a {
   object-fit: cover;
 }
 
+@keyframes album-placeholder-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .album-image-frame,
-  .album-image-frame img {
+  .album-image-frame img,
+  .album-image-placeholder::after {
     transition: none;
+    animation: none;
   }
 }
 
