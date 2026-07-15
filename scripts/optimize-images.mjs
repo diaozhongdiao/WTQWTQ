@@ -8,11 +8,21 @@ const optimizedRoot = path.join(mediaRoot, 'optimized')
 const albumRoot = path.join(mediaRoot, 'album')
 const albumDataPath = path.join(projectRoot, 'src', 'albumData.js')
 const imageExts = new Set(['.jpg', '.jpeg', '.png', '.webp'])
+const preserveOptimizedFiles = ['hero-poster.webp']
 
 const albumCategories = [
-  { key: 'work-a', slug: 'car-commercial', match: '01.', columns: 5, shuffle: true, cropLongAspect: 2 },
-  { key: 'work-b', slug: 'brand-system', match: '02.', columns: 1, reverse: true },
-  { key: 'work-c', slug: 'creative-design', match: '03.', columns: 1 },
+  {
+    key: 'work-a',
+    slug: 'car-commercial',
+    match: '01.',
+    columns: 5,
+    shuffle: true,
+    maxWidth: 1200,
+    maxHeight: 16380,
+    quality: 62,
+  },
+  { key: 'work-b', slug: 'brand-system', match: '02.', columns: 1, reverse: true, maxWidth: 1500, maxHeight: 9000, quality: 78 },
+  { key: 'work-c', slug: 'creative-design', match: '03.', columns: 1, maxWidth: 1500, maxHeight: 9000, quality: 78 },
 ]
 
 function toPublicPath(filePath) {
@@ -101,9 +111,9 @@ async function optimizeAlbum() {
       const filename = `${String(index + 1).padStart(3, '0')}.webp`
       const output = path.join(optimizedRoot, 'album', category.slug, filename)
       const dimensions = await convertToWebp(input, output, {
-        maxWidth: category.columns === 5 ? 1200 : 1900,
-        maxHeight: category.columns === 5 ? 2400 : 9000,
-        quality: category.columns === 5 ? 83 : 85,
+        maxWidth: category.maxWidth,
+        maxHeight: category.maxHeight,
+        quality: category.quality,
         cropLongAspect: category.cropLongAspect ?? null,
       })
       images.push({
@@ -131,8 +141,10 @@ async function optimizeReferencedMedia() {
     const output = path.join(optimizedRoot, parsed.dir, `${parsed.name}.webp`)
     const isCover = rel.startsWith(`work-covers${path.sep}`)
     const isHeroGallery = rel.startsWith(`hero-gallery${path.sep}`)
-    const maxWidth = isCover ? 2400 : isHeroGallery ? 1100 : 1600
-    const quality = isCover ? 86 : isHeroGallery ? 84 : 86
+    const isStrengthIcon = rel.startsWith(`strength-icons${path.sep}`)
+    const isStrengthHoverIcon = rel.startsWith(`strength-hover-icons${path.sep}`)
+    const maxWidth = isCover ? 1800 : isHeroGallery ? 900 : isStrengthIcon || isStrengthHoverIcon ? 900 : 1600
+    const quality = isCover ? 80 : isHeroGallery ? 78 : isStrengthIcon || isStrengthHoverIcon ? 78 : 84
     await convertToWebp(input, output, { maxWidth, quality })
   }
 }
@@ -142,9 +154,32 @@ function writeAlbumData(categories) {
   return fs.writeFile(albumDataPath, content)
 }
 
+async function readPreservedOptimizedFiles() {
+  const preserved = new Map()
+  for (const rel of preserveOptimizedFiles) {
+    const filePath = path.join(optimizedRoot, rel)
+    try {
+      preserved.set(rel, await fs.readFile(filePath))
+    } catch {
+      // The file may not exist on a fresh checkout.
+    }
+  }
+  return preserved
+}
+
+async function restorePreservedOptimizedFiles(preserved) {
+  for (const [rel, buffer] of preserved) {
+    const filePath = path.join(optimizedRoot, rel)
+    await fs.mkdir(path.dirname(filePath), { recursive: true })
+    await fs.writeFile(filePath, buffer)
+  }
+}
+
+const preservedOptimizedFiles = await readPreservedOptimizedFiles()
 await fs.rm(optimizedRoot, { recursive: true, force: true })
 const albumData = await optimizeAlbum()
 await optimizeReferencedMedia()
+await restorePreservedOptimizedFiles(preservedOptimizedFiles)
 await writeAlbumData(albumData)
 
 const beforeFiles = await listFiles(mediaRoot)

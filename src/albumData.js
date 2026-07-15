@@ -11,14 +11,14 @@ const albumData = {
       },
       {
         "src": "/media/optimized/album/car-commercial/002.webp",
-        "width": 1080,
-        "height": 2160,
+        "width": 1001,
+        "height": 16380,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/003.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 10903,
         "long": false
       },
       {
@@ -30,19 +30,19 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/005.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 6601,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/006.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 6755,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/007.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 7560,
         "long": false
       },
       {
@@ -54,13 +54,13 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/009.webp",
         "width": 750,
-        "height": 1500,
+        "height": 8600,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/010.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 8388,
         "long": false
       },
       {
@@ -77,8 +77,8 @@ const albumData = {
       },
       {
         "src": "/media/optimized/album/car-commercial/013.webp",
-        "width": 1080,
-        "height": 2160,
+        "width": 815,
+        "height": 16380,
         "long": false
       },
       {
@@ -102,7 +102,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/017.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 7839,
         "long": false
       },
       {
@@ -150,7 +150,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/025.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 10917,
         "long": false
       },
       {
@@ -168,7 +168,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/028.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 8728,
         "long": false
       },
       {
@@ -191,8 +191,8 @@ const albumData = {
       },
       {
         "src": "/media/optimized/album/car-commercial/032.webp",
-        "width": 1080,
-        "height": 2160,
+        "width": 904,
+        "height": 16380,
         "long": false
       },
       {
@@ -204,19 +204,19 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/034.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 7603,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/035.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 6078,
         "long": false
       },
       {
         "src": "/media/optimized/album/car-commercial/036.webp",
-        "width": 1080,
-        "height": 2160,
+        "width": 936,
+        "height": 16380,
         "long": false
       },
       {
@@ -228,7 +228,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/038.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 5819,
         "long": false
       },
       {
@@ -246,7 +246,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/041.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 8087,
         "long": false
       },
       {
@@ -282,7 +282,7 @@ const albumData = {
       {
         "src": "/media/optimized/album/car-commercial/047.webp",
         "width": 1080,
-        "height": 2160,
+        "height": 10092,
         "long": false
       },
       {
@@ -335,8 +335,8 @@ const albumData = {
     "images": [
       {
         "src": "/media/optimized/album/creative-design/001.webp",
-        "width": 1900,
-        "height": 3274,
+        "width": 1500,
+        "height": 2584,
         "long": false
       },
       {
@@ -353,8 +353,8 @@ const albumData = {
       },
       {
         "src": "/media/optimized/album/creative-design/004.webp",
-        "width": 1900,
-        "height": 5645,
+        "width": 1500,
+        "height": 4456,
         "long": false
       },
       {
